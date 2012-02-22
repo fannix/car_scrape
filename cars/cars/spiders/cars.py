@@ -20,24 +20,16 @@ class CarNews(Item):
 class CarNewsSpider(CrawlSpider):
 
     name = "biauto"
-    #allowed_domains = ['news.biauto.com']
     allowed_domains = []
-    #allowed_domains = [
-            #"news.biauto.com/recall_gn",
-            #"news.biauto.com/recall_gw",
-            #"news.biauto.com/newslist" ]
-    #news_domains = [
-            #"news.biauto.com/recall_gn",
-            #"news.biauto.com/recall_gw"]
     start_urls = ["http://news.bitauto.com/newslist/a886-1.html"]
     rules = (
             Rule(
                 SgmlLinkExtractor(
                     #allow=r".*",
-                    restrict_xpaths='//div[@class="line_box all_newslist mainlist_box"]'),
+                    restrict_xpaths='//div[@id="newslist"]'),
+                    #restrict_xpaths='//div[@class="line_box all_newslist mainlist_box"]'),
                 callback="parse_news",
                 follow=True),
-            #Rule(SgmlLinkExtractor(allow=('newslist/a886-2\.html')))
             )
 
     def parse_news(self, response):
@@ -45,18 +37,18 @@ class CarNewsSpider(CrawlSpider):
 
         #print "----", self.allowed_domains
 
-        print "----", response.url
         if "recall_" not in response.url:
             return None
 
         news = CarNews()
         news['url'] = response.url
-        news['title'] = x.select('//a[@class="yuanchuang"]/text()').extract()
+        news['title'] = x.select('//h1[@class="con"]//text()').extract()
         news['topic'] = ""
         news['time'] = x.select('//li[@id="time"]/text()').extract()
         news['source'] = ""
         # Use string() or //text() to select nested text
-        news['content'] = x.select('//div[@class="con_main"]//text()').extract()
+        news['content'] = \
+                [e.strip() for e in x.select('//div[@class="con_main"]//text()').extract()]
         print news['title']
 
         return news
