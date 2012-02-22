@@ -1,5 +1,5 @@
 """
-Scrape car recall news
+Scrape biatuo car recall news
 """
 from scrapy.item import Item, Field
 from scrapy.contrib.spiders import CrawlSpider, Rule
