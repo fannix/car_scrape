@@ -1,0 +1,4 @@
+python scrape_table.py
+
+scrapy biatuo -o biauto.csv -t csv
+scrapy qiche365 -o qiche365.csv -t csv
